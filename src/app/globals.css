@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #F9F9F9;
+  --foreground: #2A3335;
+  --primary: #594a47;
+  --gray: #d9d9d9;
+  --dark: #161616;
+  --red: #D84040;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  font-family: 'Roboto', sans-serif;
+}
+
+/* component navbar */
+.navbar{
+  background-color: var(--primary);
+}
+.navbar .navbar-brand{
+  color: var(--gray);
+}
+.img .logosb{
+  border: 1px solid var(--gray);
+}
+.nav-item .nav-link{
+  color: var(--gray);
+  font-weight: 500;
+  font-size: 19px;
+}
+
+.navbar .active-navbar{
+  color: var(--dark);
+  border-bottom: 2px solid var(--dark);
+}
+
+
