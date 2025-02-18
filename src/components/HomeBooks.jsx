@@ -5,7 +5,7 @@ import SearchBooks from "./SearchBooks";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { useSession } from "next-auth/react";
-import { database, ref, set } from "@/firebase/Firebase";
+import { database, ref, set, get } from "@/firebase/Firebase";
 
 const HomeBooks = () => {
   const { data: session } = useSession(); // Ambil status session
@@ -22,10 +22,12 @@ const HomeBooks = () => {
       `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`
     );
     const data = await response.json();
-    setBooks(data.items || []);
+    const book = data.items || [];
+    setBooks(book);
 
     // Simpan hasil pencarian ke localStorage
-    localStorage.setItem("books", JSON.stringify(data.items))
+    const searchRef = ref(database, "books")
+    await set(searchRef, book)
   };
 
   // Fungsi untuk mengambil buku secara random
