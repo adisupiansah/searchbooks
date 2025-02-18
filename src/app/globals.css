@@ -5,7 +5,7 @@
 :root {
   --background: #F9F9F9;
   --foreground: #2A3335;
-  --primary: #594a47;
+  --primary: #3674b5;
   --gray: #d9d9d9;
   --dark: #161616;
   --red: #D84040;
@@ -24,7 +24,8 @@ body {
 
 /* component navbar */
 .navbar{
-  background-color: var(--primary);
+  background-color: rgba(54, 115, 181, 0.733);
+  backdrop-filter: blur(7px);
 }
 .navbar .navbar-brand{
   color: var(--gray);
@@ -41,6 +42,63 @@ body {
 .navbar .active-navbar{
   color: var(--dark);
   border-bottom: 2px solid var(--dark);
+}
+
+/* navigasi detailbuku active */
+.active-navigasidetail{
+  border-bottom: 2px solid #3B82F6;
+  color: #3B82F6;
+}
+
+/* Navbar DropDown User */
+.bg-dropdownuser{
+  background: var(--foreground);
+}
+.bg-dropdownuser .btn {
+  background-color: var(--red);
+}
+
+/* component auth */
+.authlogin{
+  background-image: url('../../public/img/walauth.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+.authlogin .card{
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(7px);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* loader css */
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid #0000;
+  border-right-color: #ffa50097;
+  position: relative;
+  animation: l24 1s infinite linear;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: inherit;
+  animation: inherit;
+  animation-duration: 2s;
+}
+.loader:after {
+  animation-duration: 4s;
+}
+@keyframes l24 {
+  100% {transform: rotate(1turn)}
 }
 
 

@@ -1,11 +1,10 @@
-
-import HomeBooks from '@/components/HomeBooks'
+import AuthLogin from '@/components/AuthLogin'
 import React from 'react'
 
 const page = () => {
-  return (  
+  return (
     <div>
-        <HomeBooks/>
+      <AuthLogin/>
     </div>
   )
 }

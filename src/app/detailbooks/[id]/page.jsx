@@ -1,11 +1,10 @@
-
-import HomeBooks from '@/components/HomeBooks'
+import DetailBuku from '@/components/DetailBuku'
 import React from 'react'
 
 const page = () => {
-  return (  
+  return (
     <div>
-        <HomeBooks/>
+      <DetailBuku/>
     </div>
   )
 }
