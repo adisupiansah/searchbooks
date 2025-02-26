@@ -5,7 +5,7 @@ import SearchBooks from "./SearchBooks";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { useSession } from "next-auth/react";
-import { database, ref, set, get } from "@/firebase/Firebase";
+import { database, ref, set, get, update } from "@/firebase/Firebase";
 
 const HomeBooks = () => {
   const { data: session } = useSession(); // Ambil status session
@@ -13,47 +13,6 @@ const HomeBooks = () => {
   const [readmore, setReadmore] = useState({});
   const [bookShelves, setBookShelves] = useState({});
   const API_KEY = "AIzaSyD0e40Wme2jC6_NYxbe8K8r_gOvOXAnEno";
-
-  // Fungsi untuk mencari buku berdasarkan input user
-  const SearchBook = async (query) => {
-    if (!query) return;
-
-    const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`
-    );
-    const data = await response.json();
-    const book = data.items || [];
-    setBooks(book);
-
-    // Simpan hasil pencarian ke localStorage
-    const searchRef = ref(database, "books")
-    await set(searchRef, book)
-  };
-
-  // Fungsi untuk mengambil buku secara random
-  const fetchBooks = async () => {
-    try {
-      const randomChar = String.fromCharCode(
-        97 + Math.floor(Math.random() * 26)
-      );
-
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Jeda 1 detik untuk menghindari rate-limit
-
-      const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${randomChar}&maxResults=40&key=${API_KEY}`
-      );
-      const data = await response.json();
-
-      console.log("Data buku", data);
-      setBooks(data.items || []);
-
-      // Simpan ke localStorage agar tidak request berulang
-      localStorage.setItem("books", JSON.stringify(data.items));
-    } catch (error) {
-      console.error("Error fetching books:", error);
-      setBooks([]);
-    }
-  };
 
   const addToShelf = (book, shelfName) => {
     if (!shelfName) return;
@@ -111,20 +70,54 @@ const HomeBooks = () => {
     }));
   };
 
+  // Fungsi untuk mencari buku berdasarkan input user
+  const SearchBook = async (query) => {
+    if (!query) return;
+
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`
+    );
+    const data = await response.json();
+    const book = data.items || [];
+    setBooks(book);
+
+    // Simpan hasil pencarian ke localStorage
+    const searchRef = ref(database, "books")
+    await set(searchRef, book)
+  };
+
+  // Fungsi untuk mengambil buku secara random
+  const fetchBooks = async () => {
+    try {
+      const booksRef = ref(database, "books");
+      const snapshot = await get(booksRef);
+
+      if (snapshot.exists()) {
+        console.log("✅ Menggunakan data dari Firebase");
+        setBooks(snapshot.val());
+      } else {
+        console.log("⚠️ Tidak ada data, ambil dari API...");
+        const randomChar = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+        const response = await fetch(
+          `https://www.googleapis.com/books/v1/volumes?q=${randomChar}&maxResults=40&key=${API_KEY}`
+        );
+        const data = await response.json();
+        const book = data.items || [];
+        setBooks(book);
+
+        // 📝 **Simpan ke Firebase**
+        await set(booksRef, book);
+      }
+    } catch (error) {
+      console.error("❌ Error fetching books:", error);
+      setBooks([]);
+    }
+  };
+
+  // 🚀 **3. useEffect: Cek Firebase Dulu**
   useEffect(() => {
-    const cachedBooks = localStorage.getItem("books");
-    const cachedShelves = localStorage.getItem("bookShelves");
-
-    if (cachedBooks) {
-      setBooks(JSON.parse(cachedBooks)); // Ambil daftar buku dari cache
-    } else {
-      fetchBooks(); // Jika tidak ada cache, ambil dari API
-    }
-
-    if (cachedShelves) {
-      setBookShelves(JSON.parse(cachedShelves)); // Ambil rak buku dari cache
-    }
-  }, []);
+    fetchBooks();
+  }, []); 
 
   const countBookShelf = () => {
     const cachedShelves = localStorage.getItem("bookShelves");
